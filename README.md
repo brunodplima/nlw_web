@@ -1,3 +1,6 @@
+# nlw_web
+Projeto criado durante a Next Level Week da Rocketseat (01 a 07 de junho de 2020).
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
