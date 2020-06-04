@@ -29,9 +29,16 @@ const CreatePoint = () => {
 
   const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0])
 
+  const [inputData, setInputData] = useState({
+    name: '',
+    email: '',
+    whatsapp: '',
+  })
+
   const [selectedUf, setSelectedUf] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0])
+  const [selectedItems, setSelectedItems] = useState<number[]>([])
 
   useEffect(() => {
     api.get('items').then(response => {
@@ -58,6 +65,10 @@ const CreatePoint = () => {
     })
   }, [])
 
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputData({...inputData, [event.target.name]: event.target.value});
+  }
+
   const handleSelectUf = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedUf(event.target.value);
   }
@@ -68,6 +79,13 @@ const CreatePoint = () => {
 
   const handleMapClick = (event: LeafletMouseEvent) => {
     setSelectedPosition([event.latlng.lat, event.latlng.lng])
+  }
+
+  const handleSelectItem = (id: number) => {
+    setSelectedItems(selectedItems.includes(id)
+      ? selectedItems.filter((item) => item !== id)
+      : [...selectedItems, id]
+    )
   }
 
   return (
@@ -91,17 +109,35 @@ const CreatePoint = () => {
 
               <div className="field">
                 <label htmlFor="name">Nome da entidade</label>
-                <input type="text" name="name" id="name"/>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={inputData.name}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="field-group">
                 <div className="field">
                   <label htmlFor="email">E-mail</label>
-                  <input type="email" name="email" id="email"/>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    value={inputData.email}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <div className="field">
                   <label htmlFor="whatsapp">WhatsApp</label>
-                  <input type="tel" name="whatsapp" id="whatsapp"/>
+                  <input
+                    type="tel"
+                    name="whatsapp"
+                    id="whatsapp"
+                    value={inputData.whatsapp}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
             </fieldset>
@@ -150,7 +186,11 @@ const CreatePoint = () => {
 
               <ul className="items-grid">
                 {items.map(item => (
-                  <li key={item.id}>
+                  <li
+                    key={item.id}
+                    className={selectedItems.includes(item.id) ? 'selected' : ''}
+                    onClick={() => handleSelectItem(item.id)}
+                  >
                     <img
                       src={`${process.env.REACT_APP_API_URL}/uploads/${item.image}`}
                       alt={item.title}
